@@ -1,8 +1,10 @@
 {
   "name": "pulsar-ide-laevi",
   "version": "0.1.0",
-  "description": "Direct LSP wiring for Bash, YAML, TypeScript/JavaScript, CSS, and JSON (via Biome), plus synchronous linting for Less/Scss, including standalone files outside a project folder.",
+  "description": "Language server support for Bash, YAML, TypeScript/JavaScript, CSS, and JSON, including standalone files outside a project folder.",
   "main": "./lib/main.js",
+  "repository": "https://github.com/ViolinKaine/pulsar-ide-laevi",
+  "license": "MIT",
   "engines": {
     "atom": ">=1.21.0 <2.0.0"
   },

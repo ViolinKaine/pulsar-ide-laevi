@@ -1,45 +1,47 @@
 # pulsar-ide-laevi
 
-Custom Pulsar package wiring up diagnostics for Bash, YAML, TypeScript/JavaScript, JSON, and CSS/Less/Scss — built after the third-party `pulsar-ide-*` packages for these languages silently never activated their servers on this system, for reasons never fully root-caused.
+Language server support for Bash, YAML, TypeScript/JavaScript, CSS, and JSON in [Pulsar](https://pulsar-edit.dev/) — diagnostics, autocomplete, hover, and outline, all working even on standalone files that aren't part of an open project.
 
-## What it does
+## Features
 
-- **Bash, YAML, TypeScript/JavaScript**: full LSP clients (`bash-language-server`, `yaml-language-server`, `typescript-language-server`), giving diagnostics, hover, completion, outline, etc.
-- **CSS, JSON**: full LSP client via [Biome](https://biomejs.dev/) (`biome lsp-proxy`) — diagnostics and autocomplete. Outline does **not** work for these two — Biome's LSP mode doesn't implement `documentSymbolProvider` yet (checked their public roadmap/issues, no dedicated tracked request found as of writing).
-- **Less / Scss**: syntax-error checking via `postcss` + `postcss-less` + `postcss-scss`, dialect chosen automatically from the file's grammar scope — kept separate from Biome since Biome's CSS parser doesn't understand Less/Scss dialects.
-- **Works on standalone files** — a file doesn't need to be inside an added Pulsar project folder for any of the above to activate. Normally Pulsar's LSP client library refuses to start a server for such files; this package overrides that.
-- Status bar tile (bottom right) showing which languages are currently active, e.g. `LSP: Bash, CSS/JSON (Biome), Less/Scss`.
+- **Bash, YAML, TypeScript/JavaScript** — full language server support (`bash-language-server`, `yaml-language-server`, `typescript-language-server`): diagnostics, autocomplete, hover, and outline.
+- **CSS, JSON** — full language server support via [Biome](https://biomejs.dev/): diagnostics and autocomplete. (Outline isn't available for these two yet — Biome's language server doesn't implement that capability.)
+- **Less, Scss** — syntax-error checking, dialect detected automatically.
+- **Works without a project folder open.** Most Pulsar language-server packages only activate for files inside an added project folder. This package activates for any file, standalone or not.
+- A status bar indicator shows which languages currently have an active connection.
 
 ## Install
 
-```fish
-cd ~/Projects/pulsar-ide-laevi
-/opt/Pulsar/resources/app/ppm/bin/ppm install
-```
+From Pulsar's package manager: search for `pulsar-ide-laevi` in Settings → Install, or run:
 
-Then `ppm link ~/Projects/pulsar-ide-laevi` (symlinks it into `~/.pulsar/packages/pulsar-ide-laevi`) if not already linked, and reload Pulsar.
+```
+ppm install pulsar-ide-laevi
+```
 
 ## Requirements
 
-System binaries expected on `PATH` (this package does not install them):
+These system tools need to be installed and available on your `PATH`:
 
 - `bash-language-server`
 - `yaml-language-server`
 - `typescript-language-server`
-- `node` (used to spawn the above three, and Biome's launcher shim)
+- `node` (used to launch the three servers above)
 
-Nothing external needed for CSS/JSON/Less/Scss — those run entirely on bundled npm dependencies (`@biomejs/biome`, `postcss`).
+Nothing extra is needed for CSS, JSON, Less, or Scss — those are fully self-contained in this package.
 
-## Architecture
+## Why this exists
 
-- `lib/base-client.js` — shared `AutoLanguageClient` subclass. Overrides `determineProjectPath` to fall back to the file's own directory when no project folder contains it (the standalone-file fix), and wraps `spawn()` to report to the status bar.
-- `lib/clients/{bash,yaml,typescript,biome}.js` — thin per-language LSP clients, bare-name `spawn()` relying on `PATH` (or a `require.resolve`'d bundled binary for Biome).
-- `lib/simple-linters/css.js` — synchronous, non-LSP linter for Less/Scss only (classic `linter` v2 API, not `linter-indie`).
-- `lib/status.js` — the status bar tile.
-- `lib/main.js` — activates everything, exposes `consumeLinterV2`/`provideLinter`/`provideOutlines`/`consumeStatusBar`.
+Pulsar's ecosystem already has language-server packages for these languages, but on some setups they fail to activate their servers with no visible error at all — nothing in the console, no notification. This package is a from-scratch alternative that talks to the same underlying language servers directly, built and tested to confirm each one actually works end-to-end rather than just installing without errors.
 
-## Known gotchas (see CLAUDE.md for the full incident log)
+## Known limitations
 
-- `postcss.parse(code, { syntax })` does **not** work — `syntax` is a stylelint/postcss-cli convention, not honored by the low-level `postcss.parse()` function. Call `syntax.parse(code, opts)` directly instead.
-- Any top-level `require()` in a file eagerly loaded by `main.js` that throws during package activation takes down the **entire** package, not just that one feature — prefer lazy `require()` inside the function that needs it for anything with filesystem-search side effects (config resolvers, `cosmiconfig`, etc).
-- Pulsar's `status-bar` service is versioned `1.1.0` (and legacy `0.58.0`), not `1.0.0` — a wrong version number in `consumedServices` fails silently with no error anywhere.
+- Outline (symbol/structure view) works for Bash, YAML, and TypeScript/JavaScript, but not CSS or JSON — this is a limitation of Biome's language server, not something this package can currently work around.
+- Less/Scss get syntax checking only (no autocomplete/hover) since Biome's CSS support doesn't cover those dialects.
+
+## Contributing
+
+Issues and PRs are welcome. If you want to add support for another language, look at `lib/clients/*.js` for the pattern — each one is a small subclass covering one language server.
+
+## License
+
+MIT
