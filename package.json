@@ -1,6 +1,6 @@
 {
   "name": "pulsar-ide-laevi",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Language server support for Bash, YAML, TypeScript/JavaScript, Python, CSS, and JSON, including standalone files outside a project folder.",
   "main": "./lib/main.js",
   "repository": "https://github.com/ViolinKaine/pulsar-ide-laevi",
