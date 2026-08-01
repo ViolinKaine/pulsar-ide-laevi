@@ -1,7 +1,7 @@
 {
   "name": "pulsar-ide-laevi",
   "version": "0.1.0",
-  "description": "Direct LSP wiring for Bash, YAML, and TypeScript/JavaScript, plus synchronous linting for JSON and CSS, including standalone files outside a project folder.",
+  "description": "Direct LSP wiring for Bash, YAML, TypeScript/JavaScript, CSS, and JSON (via Biome), plus synchronous linting for Less/Scss, including standalone files outside a project folder.",
   "main": "./lib/main.js",
   "engines": {
     "atom": ">=1.21.0 <2.0.0"
@@ -34,6 +34,7 @@
     }
   },
   "dependencies": {
+    "@biomejs/biome": "^1.9.0",
     "@savetheclocktower/atom-languageclient": "^1.17.11",
     "postcss": "^8.4.0",
     "postcss-less": "^6.0.0",
