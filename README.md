@@ -1,10 +1,10 @@
 # pulsar-ide-laevi
 
-Language server support for Bash, YAML, TypeScript/JavaScript, CSS, and JSON in [Pulsar](https://pulsar-edit.dev/) — diagnostics, autocomplete, hover, and outline, all working even on standalone files that aren't part of an open project.
+Language server support for Bash, YAML, TypeScript/JavaScript, Python, CSS, and JSON in [Pulsar](https://pulsar-edit.dev/) — diagnostics, autocomplete, hover, and outline, all working even on standalone files that aren't part of an open project.
 
 ## Features
 
-- **Bash, YAML, TypeScript/JavaScript** — full language server support (`bash-language-server`, `yaml-language-server`, `typescript-language-server`): diagnostics, autocomplete, hover, and outline.
+- **Bash, YAML, TypeScript/JavaScript, Python** — full language server support (`bash-language-server`, `yaml-language-server`, `typescript-language-server`, `pylsp`): diagnostics, autocomplete, hover, and outline.
 - **CSS, JSON** — full language server support via [Biome](https://biomejs.dev/): diagnostics and autocomplete. (Outline isn't available for these two yet — Biome's language server doesn't implement that capability.)
 - **Less, Scss** — syntax-error checking, dialect detected automatically.
 - **Works without a project folder open.** Most Pulsar language-server packages only activate for files inside an added project folder. This package activates for any file, standalone or not.
@@ -18,6 +18,8 @@ From Pulsar's package manager: search for `pulsar-ide-laevi` in Settings → Ins
 ppm install pulsar-ide-laevi
 ```
 
+If you already use another Python/Bash/YAML/TypeScript IDE package, disable or uninstall it first to avoid duplicate diagnostics.
+
 ## Requirements
 
 These system tools need to be installed and available on your `PATH`:
@@ -25,7 +27,8 @@ These system tools need to be installed and available on your `PATH`:
 - `bash-language-server`
 - `yaml-language-server`
 - `typescript-language-server`
-- `node` (used to launch the three servers above)
+- `python3` with `python-lsp-server` (`pylsp`) installed, **including its lint plugins** (`pyflakes`, `pycodestyle` — some distros package these separately from the base server)
+- `node` (used to launch the servers above)
 
 Nothing extra is needed for CSS, JSON, Less, or Scss — those are fully self-contained in this package.
 
