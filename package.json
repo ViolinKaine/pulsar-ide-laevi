@@ -33,6 +33,16 @@
       "versions": {
         "0.1.0": "provideOutlines"
       }
+    },
+    "definitions": {
+      "versions": {
+        "0.1.0": "provideDefinitions"
+      }
+    },
+    "find-references": {
+      "versions": {
+        "0.1.0": "provideFindReferences"
+      }
     }
   },
   "dependencies": {
